@@ -1,0 +1,54 @@
+/* App-specific styles */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-wrap {
+  flex: 1;
+  padding: 2rem 0;
+}
+
+.alert {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.alert-success {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+
+.alert-error {
+  background-color: #f8d7da;
+  color: #842029;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.table th {
+  background-color: #f8fafc;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.table tr:hover {
+  background-color: #f9fafb;
+}
+
+.action-cell {
+  display: flex;
+  gap: 0.5rem;
+}
