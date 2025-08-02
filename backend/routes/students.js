@@ -1,11 +1,12 @@
-const router = require('express');
+const express = require("express");
+const router = express.Router();
 let Student = require("../models/Student");
 
 router.route("/add").post((req,res)=>{
     const name=req.body.name;
     const age=Number(req.body.age);
     const gender=req.body.gender;
-    const email=email(req.body.email);
+    const email=req.body.email;
 
     const newStudent = new Student({
         name,
@@ -66,15 +67,16 @@ router.route("/delete/:id").delete(async (req, res) => {
     }
 });
 
-router.route("/get/:id").get(async(req,res)=>{
-    let userId = req.params.id;
-    const user = await Student.findById(userId)
-    .then(()=>{
-        res.status(200).send({status:"User fetched",user:user})
-    }).catch(()=>{
-        console.log(err.message);
-        res.status(500).send({status:"Error with get user",error:err.message})
-    })
-})
-
+router.route("/get/:id").get(async (req, res) => {
+    try {
+        const user = await Student.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ status: "User not found" });
+        }
+        res.status(200).json({ status: "User fetched", user });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ status: "Error with get user", error: err.message });
+    }
+});
 module.exports = router;
