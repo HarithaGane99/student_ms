@@ -2,7 +2,7 @@ const express =require('express');
 const mongoose=require('mongoose');
 const bodyParser=require('body-parser');
 const cors=require('cors');
-const dotenv=require('dotenv');
+//const dotenv=require('dotenv');
 require('dotenv').config();
 
 const app=express();
@@ -24,9 +24,11 @@ connection.once("open",()=>{
     console.log("Mongodb Connection success!")
 })
 
+const authRouter = require("./routes/auth.js");
+const studentRouter = require("./routes/students.js");
 
-const studentRouter=require("./routes/students.js");
-app.use("/student",studentRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/student",studentRouter);
 
 
 app.listen(PORT,()=>{
