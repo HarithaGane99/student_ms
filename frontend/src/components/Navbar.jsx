@@ -1,26 +1,41 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
+  const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
     <nav className="navbar" style={styles.navbar}>
       <div className="container" style={styles.container}>
-        <Link to="/" style={styles.brand}>
+        <Link to={isAuthenticated ? "/" : "/login"} style={styles.brand}>
           Student Manager
         </Link>
         <div style={styles.navLinks}>
-          <Link to="/" style={styles.navLink}>
-            All Students
-          </Link>
-          <Link to="/add" style={styles.navLink}>
-            Add Student
-          </Link>
+          {isAuthenticated ? (
+            <>
+              <Link to="/" style={styles.navLink}>All Students</Link>
+              <button onClick={handleLogout} className="btn btn-danger">Logout</button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" style={styles.navLink}>Login</Link>
+              <Link to="/register" style={styles.navLink}>Register</Link>
+            </>
+          )}
         </div>
       </div>
     </nav>
   );
 };
 
+// ... your styles object remains the same
 const styles = {
   navbar: {
     backgroundColor: '#4361ee',
@@ -41,6 +56,7 @@ const styles = {
   navLinks: {
     display: 'flex',
     gap: '1.5rem',
+    alignItems: 'center'
   },
   navLink: {
     color: 'rgba(255,255,255,0.85)',
@@ -50,5 +66,6 @@ const styles = {
     transition: 'color 0.3s',
   },
 };
+
 
 export default Navbar;

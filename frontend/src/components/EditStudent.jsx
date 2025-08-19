@@ -1,51 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const EditStudent = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    name: '',
-    age: '',
-    gender: '',
-    email: ''
-  });
+  const { token } = useAuth(); // Get the token
+  // ... rest of your state declarations ...
+  const [formData, setFormData] = useState({ name: '', age: '', gender: '', email: '' });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  // Create the authorized axios instance
+  const authAxios = axios.create({
+      baseURL: 'http://localhost:8070',
+      headers: {
+        'x-auth-token': `${token}`,
+      },
+    });
+
+
   useEffect(() => {
     const fetchStudent = async () => {
       try {
-        const response = await axios.get(`http://localhost:8070/student/get/${id}`);
+        const response = await authAxios.get(`/api/student/get/${id}`);
         const student = response.data.user;
-        setFormData({
-          name: student.name,
-          age: student.age,
-          gender: student.gender,
-          email: student.email
-        });
+        setFormData({ name: student.name, age: student.age, gender: student.gender, email: student.email });
         setLoading(false);
       } catch (err) {
         setError('Failed to fetch student data');
         setLoading(false);
       }
     };
-    fetchStudent();
-  }, [id]);
+    if (token) {
+      fetchStudent();
+    }
+  }, [id, token]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
+  const handleChange = (e) => { /* ... no change here ... */ };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:8070/student/update/${id}`, {
+       // Use the new URL and authorized instance
+      await authAxios.put(`/api/student/update/${id}`, {
         ...formData,
-        age: Number(formData.age)  // Ensure age is a number
+        age: Number(formData.age)
       });
       setSuccess('Student updated successfully!');
       setTimeout(() => navigate('/'), 1500);
@@ -54,9 +56,8 @@ const EditStudent = () => {
     }
   };
 
-  if (loading) return <div className="container text-center mt-4">Loading...</div>;
-
-  return (
+  // ... rest of your JSX remains the same
+return (
     <div className="container">
       <div className="card">
         <div className="card-header">
